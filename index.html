@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Devil AI Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="chat-container">
+    <div class="header">
+      <h2>😈 Devil AI Chat</h2>
+      <div class="models">
+        <button onclick="setModel('DEVIL_LIGHT')">DEVIL LIGHT 1.0 ⚡</button>
+        <button onclick="setModel('DEVIL_IQ')">DEVIL IQ 1.5 🧠</button>
+      </div>
+    </div>
+    
+    <div id="chat-box"></div>
+    
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Type your message...">
+      <button onclick="sendMessage()">Send</button>
+      <button onclick="speak()">🔊 TTS</button>
+      <button onclick="genLogo()">🎨 Logo</button>
+    </div>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
