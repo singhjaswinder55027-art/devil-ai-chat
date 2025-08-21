@@ -2,29 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Devil AI Chat</title>
-  <link rel="stylesheet" href="style.css">
+  <title>DEVIL AI Chat</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <div class="chat-container">
-    <div class="header">
-      <h2>😈 Devil AI Chat</h2>
-      <div class="models">
-        <button onclick="setModel('DEVIL_LIGHT')">DEVIL LIGHT 1.0 ⚡</button>
-        <button onclick="setModel('DEVIL_IQ')">DEVIL IQ 1.5 🧠</button>
-      </div>
+    <h1>🔥 DEVIL AI Chatbot</h1>
+    <div>
+      <button onclick="setModel('DEVIL LIGHT 1.0')">DEVIL LIGHT 1.0</button>
+      <button onclick="setModel('DEVIL IQ 1.5')">DEVIL IQ 1.5</button>
     </div>
-    
     <div id="chat-box"></div>
-    
-    <div class="input-area">
-      <input type="text" id="user-input" placeholder="Type your message...">
-      <button onclick="sendMessage()">Send</button>
-      <button onclick="speak()">🔊 TTS</button>
-      <button onclick="genLogo()">🎨 Logo</button>
-    </div>
+    <input id="user-input" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
   </div>
-  
-  <script src="app.js"></script>
+
+  <script>
+    let currentModel = "DEVIL LIGHT 1.0";
+
+    function setModel(model) {
+      currentModel = model;
+      alert("Switched to " + model);
+    }
+
+    async function sendMessage() {
+      let msg = document.getElementById("user-input").value;
+      let res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg, model: currentModel })
+      });
+      let data = await res.json();
+      document.getElementById("chat-box").innerHTML += `<p><b>You:</b> ${msg}</p>`;
+      document.getElementById("chat-box").innerHTML += `<p><b>${currentModel}:</b> ${data.reply}</p>`;
+    }
+  </script>
 </body>
 </html>

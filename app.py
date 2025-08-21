@@ -1,40 +1,45 @@
-import os
-from fastapi import FastAPI, WebSocket
-from fastapi.responses import JSONResponse
+from flask import Flask, render_template, request, jsonify
 from models import devil_light, devil_iq
 from tts import generate_tts
 from logo_gen import generate_logo
 
-app = FastAPI()
+app = Flask(__name__)
 
-@app.get("/")
+@app.route("/")
 def home():
-    return {"message": "🚀 Devil AI Chat Running on FastAPI!"}
+    return render_template("index.html")
 
-# WebSocket for chat
-@app.websocket("/ws")
-async def websocket_endpoint(ws: WebSocket):
-    await ws.accept()
-    while True:
-        data = await ws.receive_json()
-        user_message = data["message"]
-        model = data.get("model", "DEVIL_LIGHT")
+# Chat endpoint
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.json
+    message = data.get("message")
+    model = data.get("model")
 
-        if model == "DEVIL_LIGHT":
-            response = devil_light(user_message)
-        else:
-            response = devil_iq(user_message)
+    if model == "DEVIL LIGHT 1.0":
+        reply = devil_light(message)
+    elif model == "DEVIL IQ 1.5":
+        reply = devil_iq(message)
+    else:
+        reply = "❌ Unknown model."
 
-        await ws.send_json({"response": response})
+    return jsonify({"reply": reply})
 
 # TTS endpoint
-@app.post("/tts")
-async def tts_api(text: str):
+@app.route("/tts", methods=["POST"])
+def tts():
+    data = request.json
+    text = data.get("text")
     audio_url = generate_tts(text)
-    return {"audio_url": audio_url}
+    return jsonify({"audio_url": audio_url})
 
-# Logo generator endpoint
-@app.post("/logo")
-async def logo_api(prompt: str):
-    logo_url = generate_logo(prompt)
-    return JSONResponse({"logo_url": logo_url})
+# Logo Generation endpoint
+@app.route("/logo", methods=["POST"])
+def logo():
+    data = request.json
+    prompt = data.get("prompt")
+    img_url = generate_logo(prompt)
+    return jsonify({"logo_url": img_url})
+
+if __name__ == "__main__":
+    app.run(debug=True)
